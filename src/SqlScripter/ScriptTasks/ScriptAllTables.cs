@@ -12,9 +12,6 @@ namespace SqlScripter.ScriptTasks
 
         public override void Run()
         {
-
-
-            
             var scripter = new Microsoft.SqlServer.Management.Smo.Scripter(DatabaseConnection.Server);
             scripter.Options.DriAllConstraints = true;
             scripter.Options.WithDependencies = true;
@@ -45,8 +42,6 @@ namespace SqlScripter.ScriptTasks
                 file.Close();
 
             }
-
-            
 
         }
 

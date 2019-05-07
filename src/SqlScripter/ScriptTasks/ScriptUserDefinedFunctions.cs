@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,13 +8,13 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace SqlScripter.ScriptTasks
 {
-    public class ScriptStoredProcedures : SqlScriptTask
+    public class ScriptUserDefinedFunctions : SqlScriptTask
     {
 
         public override void Run()
         {
 
-            var path = Path.Join(OutputDirectory, "StoredProcedures");
+            var path = Path.Join(OutputDirectory, "UserDefinedFunctions");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -23,9 +24,9 @@ namespace SqlScripter.ScriptTasks
             scripter.Options.ScriptDrops = true;
             scripter.Options.IncludeIfNotExists = true;
 
-            foreach (var proc in GetStoredProcedures(DatabaseConnection.Database))
+            foreach (var func in GetFunctions(DatabaseConnection.Database))
             {
-                string filePath = Path.Join(path, $"{proc.Name}.sql");
+                string filePath = Path.Join(path, $"{func.Name}.sql");
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
@@ -33,8 +34,8 @@ namespace SqlScripter.ScriptTasks
 
                 try
                 {
-                    var script = proc.Script();
-                    var drops = proc.Script(new ScriptingOptions
+                    var script = func.Script();
+                    var drops = func.Script(new ScriptingOptions
                     {
                         ScriptDrops = true,
                         IncludeIfNotExists = true
@@ -69,13 +70,13 @@ namespace SqlScripter.ScriptTasks
 
         }
 
-        private IEnumerable<StoredProcedure> GetStoredProcedures(Microsoft.SqlServer.Management.Smo.Database database)
+        private IEnumerable<UserDefinedFunction> GetFunctions(Microsoft.SqlServer.Management.Smo.Database database)
         {
-            foreach (StoredProcedure proc in database.StoredProcedures)
+            foreach (UserDefinedFunction function in database.UserDefinedFunctions)
             {
-                if (!proc.IsSystemObject)
+                if (!function.IsSystemObject)
                 {
-                    yield return proc;
+                    yield return function;
                 }
             }
         }
