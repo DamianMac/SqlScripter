@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/src/SqlScripter/bin/Debug/netcoreapp2.1/SqlScripter.dll",
-            "args": [],
+            "args": ["export", "schema", "--server=localhost", "--database=test", "--login=test", "--password=d"],
             "cwd": "${workspaceFolder}/src/SqlScripter",
             "console": "internalConsole",
             "stopAtEntry": false
