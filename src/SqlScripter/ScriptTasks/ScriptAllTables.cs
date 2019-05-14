@@ -18,7 +18,9 @@ namespace SqlScripter.ScriptTasks
             scripter.Options.Indexes = true;
             scripter.Options.IncludeIfNotExists = true;
             
-            var urns = GetTablesUrns(DatabaseConnection.Database).ToArray();
+            var urns = GetTablesUrns(DatabaseConnection.Database)
+                .Union(GetViewsUrns(DatabaseConnection.Database))
+                .ToArray();
             
             var sc = scripter.Script(urns);
 
@@ -52,6 +54,16 @@ namespace SqlScripter.ScriptTasks
                 if (!table.IsSystemObject)
                 {
                     yield return table.Urn;
+                }
+            }
+        }
+        private IEnumerable<Urn> GetViewsUrns(Microsoft.SqlServer.Management.Smo.Database database)
+        {
+            foreach (View view in database.Views)
+            {
+                if (!view.IsSystemObject)
+                {
+                    yield return view.Urn;
                 }
             }
         }

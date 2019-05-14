@@ -5,6 +5,11 @@ namespace SqlScripter.Settings
 {
     public class ExportSettings : CommandSettings
     {
+        public ExportSettings()
+        {
+            OutputDirectory = "./";
+        }
+
         [CommandOption("-d|--database <DatabaseName>")]
         [Description("Specifies the database name.")]
         public string DatabaseName { get; set; }
@@ -20,5 +25,12 @@ namespace SqlScripter.Settings
         [CommandOption("-p|--password <Password>")]
         [Description("Database password.")]
         public string Password { get; set; }
+
+        
+        [CommandOption("-o|--output <OutputDirectory>")]
+        [Description("Output directory.")]
+        public string OutputDirectory { get; set; }
+
+
     }
 }
