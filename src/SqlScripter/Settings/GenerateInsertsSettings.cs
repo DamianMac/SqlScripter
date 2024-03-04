@@ -3,9 +3,9 @@ using Spectre.Cli;
 
 namespace SqlScripter.Settings;
 
-public class ExportSettings : CommandSettings
+public class GenerateInsertsSettings : CommandSettings
 {
-    public ExportSettings()
+    public GenerateInsertsSettings()
     {
         OutputDirectory = "./";
     }
@@ -30,4 +30,8 @@ public class ExportSettings : CommandSettings
     [CommandOption("-o|--output <OutputDirectory>")]
     [Description("Output directory.")]
     public string OutputDirectory { get; set; }
+
+    [CommandOption("-t|--table <TableName>")]
+    [Description("The database table to generate.")]
+    public string TableName { get; set; }
 }

@@ -2,20 +2,20 @@ using Spectre.Cli;
 using SqlScripter.ScriptTasks;
 using SqlScripter.Settings;
 
-namespace SqlScripter.Commands
+namespace SqlScripter.Commands;
+
+public class ExportStoredProcsCommand : Command<ExportSettings>
 {
-    public class ExportStoredProcsCommand : Command<ExportSettings>
+    public override int Execute(CommandContext context, ExportSettings settings)
     {
-        public override int Execute(CommandContext context, ExportSettings settings)
+        using var conn = new DatabaseConnection(settings.ServerName, settings.DatabaseName, settings.Login,
+            settings.Password);
+        var task = new ScriptStoredProcedures
         {
-            using (var conn = new DatabaseConnection(settings.ServerName, settings.DatabaseName, settings.Login, settings.Password))
-            {
-                var task = new ScriptStoredProcedures();
-                task.DatabaseConnection = conn;
-                task.OutputDirectory = settings.OutputDirectory;
-                task.Run();
-                return 0;
-            }
-        }
+            DatabaseConnection = conn,
+            OutputDirectory = settings.OutputDirectory
+        };
+        task.Run();
+        return 0;
     }
 }

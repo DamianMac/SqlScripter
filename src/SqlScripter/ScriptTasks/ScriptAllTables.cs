@@ -5,69 +5,52 @@ using System.Linq;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
 
-namespace SqlScripter.ScriptTasks
+namespace SqlScripter.ScriptTasks;
+
+public class ScriptAllTables : SqlScriptTask
 {
-    public class ScriptAllTables : SqlScriptTask
+    public override void Run()
     {
-
-        public override void Run()
+        var scripter = new Scripter(DatabaseConnection.Server)
         {
-            var scripter = new Microsoft.SqlServer.Management.Smo.Scripter(DatabaseConnection.Server);
-            scripter.Options.DriAllConstraints = true;
-            scripter.Options.WithDependencies = true;
-            scripter.Options.Indexes = true;
-            scripter.Options.IncludeIfNotExists = true;
-            
-            var urns = GetTablesUrns(DatabaseConnection.Database)
-                .Union(GetViewsUrns(DatabaseConnection.Database))
-                .ToArray();
-            
-            var sc = scripter.Script(urns);
-
-
-            string filePath = Path.Join(OutputDirectory, "Schema.sql");
-            if ( File.Exists(filePath))
+            Options =
             {
-                File.Delete(filePath);
+                DriAllConstraints = true,
+                WithDependencies = true,
+                Indexes = true,
+                IncludeIfNotExists = true
             }
+        };
 
-            using(var file = File.OpenWrite(filePath))
-            using(var sw = new StreamWriter(file))
-            {
+        var urns = GetTablesUrns(DatabaseConnection.Database)
+            .Union(GetViewsUrns(DatabaseConnection.Database))
+            .ToArray();
 
-                foreach (var item in sc)
-                {
-                    sw.WriteLine($"{item} {Environment.NewLine}GO{Environment.NewLine}");
-                }
+        var sc = scripter.Script(urns);
 
-                sw.Close();
-                file.Close();
 
-            }
+        var filePath = Path.Join(OutputDirectory, "Schema.sql");
+        if (File.Exists(filePath)) File.Delete(filePath);
 
-        }
+        using var file = File.OpenWrite(filePath);
+        using var sw = new StreamWriter(file);
+        foreach (var item in sc) sw.WriteLine($"{item} {Environment.NewLine}GO{Environment.NewLine}");
 
-        private IEnumerable<Urn> GetTablesUrns(Microsoft.SqlServer.Management.Smo.Database database)
-        {
-            foreach (Table table in database.Tables)
-            {
-                if (!table.IsSystemObject)
-                {
-                    yield return table.Urn;
-                }
-            }
-        }
-        private IEnumerable<Urn> GetViewsUrns(Microsoft.SqlServer.Management.Smo.Database database)
-        {
-            foreach (View view in database.Views)
-            {
-                if (!view.IsSystemObject)
-                {
-                    yield return view.Urn;
-                }
-            }
-        }
-
+        sw.Close();
+        file.Close();
     }
 
+    private IEnumerable<Urn> GetTablesUrns(Database database)
+    {
+        foreach (Table table in database.Tables)
+            if (!table.IsSystemObject)
+                yield return table.Urn;
+    }
+
+    private IEnumerable<Urn> GetViewsUrns(Database database)
+    {
+        foreach (View view in database.Views)
+            if (!view.IsSystemObject)
+                yield return view.Urn;
+    }
 }

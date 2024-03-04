@@ -1,32 +1,33 @@
-﻿using System;
-using System.Linq;
-using Spectre.Cli;
+﻿using Spectre.Cli;
 using SqlScripter.Commands;
 using SqlScripter.Settings;
 
-namespace SqlScripter
+namespace SqlScripter;
+
+internal class Program
 {
-    class Program
+    public static int Main(string[] args)
     {
-        public static int Main(string[] args)
+        var app = new CommandApp();
+        app.Configure(c =>
         {
-            var app = new CommandApp();
-            app.Configure(c => 
+            c.ValidateExamples();
+
+            c.AddBranch<ExportSettings>("export", export =>
             {
-                c.ValidateExamples();
-                
-                c.AddBranch<ExportSettings>("export", export => {
-                    export.SetDescription("Export tool for things");
+                export.SetDescription("Export tool for things");
 
-                     export.AddCommand<ExportSchemaCommand>("schema");
-                     export.AddCommand<ExportStoredProcsCommand>("storedprocs");
-                     export.AddCommand<ExportUDFCommand>("udfs");
-
-                });
-
+                export.AddCommand<ExportSchemaCommand>("schema");
+                export.AddCommand<ExportStoredProcsCommand>("storedprocs");
+                export.AddCommand<ExportUDFCommand>("udfs");
             });
-            return app.Run(args);
 
-        }
+            c.AddBranch<GenerateInsertsSettings>("generate", g =>
+            {
+                g.SetDescription("Code generation tools");
+                g.AddCommand<GenerateInsertsCommand>("inserts");
+            });
+        });
+        return app.Run(args);
     }
 }
