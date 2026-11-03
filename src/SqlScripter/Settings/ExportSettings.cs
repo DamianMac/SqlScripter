@@ -30,6 +30,10 @@ public class ExportSettings : CommandSettings
     [Description("Trust the server's TLS certificate without validating it (e.g. self-signed certs).")]
     public bool TrustServerCertificate { get; set; }
 
+    [CommandOption("--no-dependencies")]
+    [Description("Skip dependency discovery (much faster on large databases). Scripts tables, then foreign keys, then views.")]
+    public bool NoDependencies { get; set; }
+
 
     [CommandOption("-o|--output <OutputDirectory>")]
     [Description("Output directory.")]

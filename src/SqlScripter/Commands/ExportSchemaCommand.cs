@@ -14,7 +14,8 @@ public class ExportSchemaCommand : Command<ExportSettings>
         var task = new ScriptAllTables
         {
             DatabaseConnection = conn,
-            OutputDirectory = settings.OutputDirectory
+            OutputDirectory = settings.OutputDirectory,
+            NoDependencies = settings.NoDependencies
         };
         task.Run();
 
