@@ -8,15 +8,22 @@ public class DatabaseConnection : IDisposable
 {
     private readonly ServerConnection connection;
 
-    public DatabaseConnection(string serverName, string databaseName)
+    public DatabaseConnection(string serverName, string databaseName, bool trustServerCertificate = false)
     {
-        connection = new ServerConnection(serverName);
+        connection = new ServerConnection(serverName)
+        {
+            TrustServerCertificate = trustServerCertificate
+        };
         Init(connection, databaseName);
     }
 
-    public DatabaseConnection(string serverName, string databaseName, string login, string password)
+    public DatabaseConnection(string serverName, string databaseName, string login, string password,
+        bool trustServerCertificate = false)
     {
-        connection = new ServerConnection(serverName, login, password);
+        connection = new ServerConnection(serverName, login, password)
+        {
+            TrustServerCertificate = trustServerCertificate
+        };
         Init(connection, databaseName);
     }
 

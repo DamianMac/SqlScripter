@@ -9,7 +9,7 @@ public class ExportUDFCommand : Command<ExportSettings>
     public override int Execute(CommandContext context, ExportSettings settings)
     {
         using var conn = new DatabaseConnection(settings.ServerName, settings.DatabaseName, settings.Login,
-            settings.Password);
+            settings.Password, settings.TrustServerCertificate);
         var task = new ScriptUserDefinedFunctions
         {
             DatabaseConnection = conn,

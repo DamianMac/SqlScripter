@@ -9,7 +9,7 @@ public class GenerateInsertsCommand : Command<GenerateInsertsSettings>
     public override int Execute(CommandContext context, GenerateInsertsSettings settings)
     {
         using var conn = new DatabaseConnection(settings.ServerName, settings.DatabaseName, settings.Login,
-            settings.Password);
+            settings.Password, settings.TrustServerCertificate);
 
         var task = new ScriptData
         {

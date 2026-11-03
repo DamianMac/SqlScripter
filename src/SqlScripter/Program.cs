@@ -12,6 +12,7 @@ internal class Program
         app.Configure(c =>
         {
             c.ValidateExamples();
+            c.PropagateExceptions();
 
             c.AddBranch<ExportSettings>("export", export =>
             {
@@ -28,6 +29,15 @@ internal class Program
                 g.AddCommand<GenerateInsertsCommand>("inserts");
             });
         });
-        return app.Run(args);
+        try
+        {
+            return app.Run(args);
+        }
+        catch (System.Exception ex)
+        {
+            for (var e = ex; e != null; e = e.InnerException)
+                System.Console.Error.WriteLine($"{e.GetType().Name}: {e.Message}");
+            return -1;
+        }
     }
 }

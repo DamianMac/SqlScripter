@@ -26,6 +26,10 @@ public class GenerateInsertsSettings : CommandSettings
     [Description("Database password.")]
     public string Password { get; set; }
 
+    [CommandOption("--trust-server-certificate")]
+    [Description("Trust the server's TLS certificate without validating it (e.g. self-signed certs).")]
+    public bool TrustServerCertificate { get; set; }
+
 
     [CommandOption("-o|--output <OutputDirectory>")]
     [Description("Output directory.")]
